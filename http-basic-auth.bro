@@ -15,9 +15,7 @@ event http_header(c: connection, is_orig: bool, name: string, value: string)
         if (|parts| == 2)
           NOTICE([$note=HTTP::Basic_Auth_Server,
                   $msg="Server identified on which Basic Access Authentication is in use.",
-                  $sub=fmt("username: %s password: %s",
-                           parts[1],
-                           HTTP::default_capture_password == F ? "Blocked" : parts[2]),
+                  $sub=fmt("username: %s", parts[1]),
                   $conn=c,
                   $identifier=cat(c$id$resp_h,c$id$resp_p),
                   $suppress_for=1day]);
