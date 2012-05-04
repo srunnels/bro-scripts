@@ -1,4 +1,4 @@
-module SRunnelsModule;
+module HTTP;
 
 export {
   redef enum Notice::Type += {
