@@ -1,4 +1,4 @@
-module SRunnelsModules
+module SRunnelsModule;
 
 # Generate an email when a local machine is detected to be using basic auth
 redef Notice::policy += {
