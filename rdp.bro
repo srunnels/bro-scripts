@@ -1,6 +1,6 @@
 ## Based off a script by Seth Hall
 
-redef signature_files += "rdp.sig";
+redef signature_files += "./srunnels-scripts/rdp.sig";
 
 module RDP;
 
@@ -64,6 +64,8 @@ event dump_bytes(id: conn_id)
 
 event signature_match(state: signature_state, msg: string, data: string)
       {
+      if (state$sig_id != "rdp_server")
+         return;
       state$conn$rdp = [$ts=network_time(), $uid=state$conn$uid, $id=state$conn$id];
       event dump_bytes(state$conn$id);
       }
