@@ -17,6 +17,7 @@ export {
     last_check:  time     &default=network_time();
     num_checks:  count    &default=0;
     last_total:  count    &default=0;
+    duration:    interval &log &optional;
     byte_vector: vector of count &default = vector(0,0,0,0,0);
     avg:         count    &log &default=0;
     };
@@ -49,7 +50,7 @@ event dump_bytes(id: conn_id)
       c$rdp$byte_vector[1] = c$rdp$byte_vector[2];
       c$rdp$byte_vector[2] = c$rdp$byte_vector[3];
       c$rdp$byte_vector[3] = c$rdp$byte_vector[4];
-      c$rdp$byte_vector[4] = c$resp$num_bytes_ip - c$rdp$last_size;
+      c$rdp$byte_vector[4] = c$resp$size - c$rdp$last_size;
       if (c$rdp$num_checks >= 4)
          {
          c$rdp$avg = (c$rdp$byte_vector[0] + c$rdp$byte_vector[1] + c$rdp$byte_vector[2] + c$rdp$byte_vector[3] + c$rdp$byte_vector[4] ) / 5;
@@ -57,7 +58,7 @@ event dump_bytes(id: conn_id)
          }
 
       ++c$rdp$num_checks;
-      c$rdp$last_size = c$resp$num_bytes_ip;
+      c$rdp$last_size = c$resp$size;
       schedule 10msecs { dump_bytes(id) };
       }
 
