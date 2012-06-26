@@ -78,7 +78,8 @@ event dump_bytes(id: conn_id)
 						c$rdp$avg_vector = vector(0);
 						}
 					}
-         Log::write(RDP::LOG, c$rdp);
+			c$rdp$ts = network_time();
+         	Log::write(RDP::LOG, c$rdp);
          }
 
 			if (c$rdp$last_avg > c$rdp$avg)
