@@ -1,6 +1,7 @@
 ## Based off a script by Seth Hall
 
-redef signature_files += "./srunnels-scripts/rdp.sig";
+#redef signature_files += "./srunnels-scripts/rdp.sig";
+redef signature_files += "rdp.sig";
 
 module RDP;
 
@@ -20,6 +21,9 @@ export {
     duration:    interval &log &optional;
     byte_vector: vector of count &default = vector(0,0,0,0,0);
     avg:         count    &log &default=0;
+		last_avg:    count    &default=0;
+		avg_vector:  vector of count &log &default = vector(0);
+		humps:       count    &log &default=0;
     };
 	
     # Amount of time to monitor a connection for the second hump of data.
@@ -54,11 +58,35 @@ event dump_bytes(id: conn_id)
       if (c$rdp$num_checks >= 4)
          {
          c$rdp$avg = (c$rdp$byte_vector[0] + c$rdp$byte_vector[1] + c$rdp$byte_vector[2] + c$rdp$byte_vector[3] + c$rdp$byte_vector[4] ) / 5;
+				 if (c$rdp$avg >= 40)
+				 	{
+					# Lets try ignoring any avg < 40
+					if (c$rdp$avg_vector[0] == 0)
+						{
+						c$rdp$avg_vector[0] = c$rdp$avg;
+						}
+						else
+						{
+						c$rdp$avg_vector[|c$rdp$avg_vector|] = c$rdp$avg;
+						}
+					}
+					else
+					{
+					if (|c$rdp$avg_vector| > 4)
+						{
+						++c$rdp$humps;
+						c$rdp$avg_vector = vector(0);
+						}
+					}
          Log::write(RDP::LOG, c$rdp);
          }
 
+			if (c$rdp$last_avg > c$rdp$avg)
+				{
+				}
       ++c$rdp$num_checks;
       c$rdp$last_size = c$resp$size;
+			c$rdp$last_avg = c$rdp$avg;
       schedule 10msecs { dump_bytes(id) };
       }
 
