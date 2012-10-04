@@ -1,7 +1,9 @@
 ## Based off a script by Seth Hall
 
 #redef signature_files += "./srunnels-scripts/rdp.sig";
-redef signature_files += "rdp.sig";
+#redef signature_files += "rdp.sig";
+
+@load-sigs ./rdp.sig
 
 module RDP;
 
